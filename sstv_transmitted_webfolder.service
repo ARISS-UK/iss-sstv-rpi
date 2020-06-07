@@ -1,0 +1,14 @@
+[Unit]
+Description=sstv transmitted webfolder
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+User=pi
+WorkingDirectory=/home/pi/iss-sstv-rpi/transmitted
+ExecStart=/usr/bin/python3 -m http.server 8080
+
+[Install]
+WantedBy=multi-user.target

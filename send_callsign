@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Ensure we're in the right working directory
+source_dir="$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)";
+cd "${source_dir}";
+
+iss-barrier/iss-barrier /tmp/iss.txt
+if [ $? -ne 0 ]
+then
+    echo "ISS Barrier says no!";
+    exit 1;
+fi
+
+limesdr_toolbox/limesdr_send -i callsign_48k.iq -s 48e3 -f 145.8e6 -b 5e6 -g 0.7 -q 1

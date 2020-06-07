@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# Ensure we're in the right working directory
+source_dir="$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)";
+cd "${source_dir}";
+
+iss-barrier/iss-barrier /tmp/iss.txt
+if [ $? -ne 0 ]
+then
+    echo "ISS Barrier says no!";
+    exit 1;
+fi
+
+# Encode image with new qr, log to file, save to transmitted, generate iq
+./sstv_qrcode2.py;
+if [ $? -ne 0 ]
+then
+    # Try again
+    echo "SSTV aborting.";
+    exit 1;
+fi
+
+# Find the wav file (it'll be the latest)
+unset -v latest
+for file in sstv_encoded/*.wav; do
+  [[ $file -nt $latest ]] && latest=$file
+done
+
+echo "Found ${latest}"
+
+# Convert wav to IQ
+echo "Modulating.."
+sox 2s_silence.wav ${latest} 2s_silence.wav -t wav - | csdr/csdr convert_i16_f | csdr/csdr gain_ff 0.75 | csdr/csdr fmmod_fc  | csdr/csdr fir_interpolate_cc 4 | csdr/csdr convert_f_i16 > latest_tx_48k.iq
+
+# Simulate random Doppler offset (+/-3KHz)
+#offset=$(($RANDOM%6000-3000))
+offset=0
+let "frequency = 145800000 + ($offset)"
+
+# Set up log files (png, wav, csv)
+TRANSMITTED_DIR="transmitted/$(date +%Y_%m_%d)"
+mkdir -p ${TRANSMITTED_DIR}
+mv ${latest%.*}.* ${TRANSMITTED_DIR}
+
+echo -e "$(date -u +"%Y-%m-%d %T %Z"),${frequency},${latest##*/}" >> ${TRANSMITTED_DIR}/transmission.csv
+
+# Transmit IQ file
+echo "Transmitting on ${frequency}.."
+limesdr_toolbox/limesdr_send -i latest_tx_48k.iq -s 48e3 -f ${frequency} -b 5e6 -g 0.7 -q 0

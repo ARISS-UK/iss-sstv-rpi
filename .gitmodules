@@ -1,0 +1,12 @@
+[submodule "csdr"]
+	path = csdr
+	url = https://github.com/ha7ilm/csdr.git
+[submodule "limesdr_ftoolbox"]
+	path = limesdr_toolbox
+	url = https://github.com/F5OEO/limesdr_toolbox.git
+[submodule "iss-barrier/libpredict"]
+	path = iss-barrier/libpredict
+	url = https://github.com/philcrump/libpredict.git
+[submodule "tle-spacetrack"]
+	path = tle-spacetrack
+	url = https://github.com/ARISS-UK/tle-spacetrack.git
