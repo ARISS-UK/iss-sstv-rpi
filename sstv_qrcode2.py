@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from multiprocessing import Pool
 from pysstv.sstv import SSTV
 from pysstv.color import PD120
 from PIL import Image
