@@ -105,6 +105,7 @@ By default this'll serve on port 8080 ( http://localhost:8080/ ) - feel free to 
 
 To use this, you'll need to record your own voice identification, at Mono 12KHz, and then modulate to the file `callsign_48k.iq` with something similar to:
 ```
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./csdr/
 sox callsign.wav 2s_silence.wav -t wav - | csdr/csdr convert_i16_f | csdr/csdr gain_ff 1.1 | csdr/csdr fmmod_fc  | csdr/csdr fir_interpolate_cc 4 | csdr/csdr convert_f_i16 > callsign_48k.iq
 ```
 

@@ -4,6 +4,9 @@
 source_dir="$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)";
 cd "${source_dir}";
 
+# Add library path for local csdr
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./csdr/
+
 iss-barrier/iss-barrier /tmp/iss.txt
 if [ $? -ne 0 ]
 then
