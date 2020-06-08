@@ -48,6 +48,7 @@ The images are also overlaid by a QRcode containing a random string, this is pro
 sudo apt install python3-pip libopenjp2-7 libtiff5
 pip3 install pysstv
 pip3 install qrcode
+pip3 install Pillow
 ```
 
 ### IF Modulation
